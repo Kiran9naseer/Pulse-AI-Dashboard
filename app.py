@@ -21,7 +21,7 @@ init_db()
 st.set_page_config(
     page_title="AI Pulse | Engine",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 # --- $100/mo SaaS Ultra-Premium Aesthetics (Linear/Vercel Vibe) ---
@@ -331,11 +331,23 @@ st.markdown("""
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Hide Streamlit elements */
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
         
+        /* --- RESPONSIVE MOBILE FIXES --- */
+        @media (max-width: 768px) {
+            /* Sidebar takes 80% of screen but not full width */
+            div[data-testid="stSidebar"] {
+                width: 80vw !important;
+                max-width: 300px !important;
+            }
+            [data-testid="stSidebar"] {
+                background: rgba(255,255,255,0.96) !important;
+                backdrop-filter: blur(15px);
+                border-right: 1px solid #e5e7eb;
+                transition: all 0.3s ease-in-out;
+            }
+            .main-title { font-size: 1.8rem !important; }
+            .subtitle { font-size: 0.9rem !important; margin-bottom: 24px !important; }
+        }
     </style>
 """, unsafe_allow_html=True)
 
