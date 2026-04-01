@@ -525,11 +525,21 @@ else:
         
         st.write("---")
         
-        page = st.radio(
-            "Main Menu",
-            ["📊 Pipeline Dashboard", "🧠 Inference Engine", "⚙️ Integrations"],
-            label_visibility="collapsed"
-        )
+        # Navigation Logic with Auto-Collapse for Mobile
+        if "page" not in st.session_state:
+            st.session_state.page = "📊 Pipeline Dashboard"
+
+        nav_options = ["📊 Pipeline Dashboard", "🧠 Inference Engine", "⚙️ Integrations"]
+        
+        for opt in nav_options:
+            is_active = st.session_state.page == opt
+            # Highlight current page and force collapse on click
+            if st.button(opt, use_container_width=True, type="primary" if is_active else "secondary"):
+                if st.session_state.page != opt:
+                    st.session_state.page = opt
+                    st.rerun()
+
+        page = st.session_state.page
         
         st.write("---")
         
@@ -711,8 +721,13 @@ else:
                     add_log(f"[SYS] Sandbox generation executed.")
                     
                     st.markdown("---")
-                    st.markdown("<div style='font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Target Response</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div style='background: #f8fafc; border: 1px solid #e5e7eb; padding: 20px; border-radius: 12px; font-size: 14px; color: #1e293b; line-height: 1.6;'>{ai_response}</div>", unsafe_allow_html=True)
+                    
+                    # Debug Info for User - Shows if mock was used or real AI
+                    if "[MOCK]" in ai_response or "[System:" in ai_response:
+                        st.error(f"Generation Issue Detected: {ai_response}")
+                    else:
+                        st.markdown("<div style='font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Target Response</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='background: #f8fafc; border: 1px solid #e5e7eb; padding: 20px; border-radius: 12px; font-size: 14px; color: #1e293b; line-height: 1.6;'>{ai_response}</div>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     # -------------------------------------------------------------------------
