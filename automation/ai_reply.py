@@ -54,21 +54,33 @@ def generate_reply(message: str) -> str:
     if not message or not message.strip():
         return "Please provide a valid text sequence."
 
-    # Robust Environment Loading
-    # Ensure .env is loaded before accessing keys
-    if ENV_PATH.exists():
-        load_dotenv(ENV_PATH)
-    else:
-        load_dotenv()
-        
-    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    # Robust Environment Loading (Cloud + Local Compatibility)
+    import streamlit as st
+    api_key = ""
+    
+    # 1. 🥇 Priority: Check Streamlit Secrets (for Cloud deployment)
+    try:
+        if "GEMINI_API_KEY" in st.secrets:
+            api_key = st.secrets["GEMINI_API_KEY"]
+            print("[AI] Found GEMINI_API_KEY in Streamlit Cloud Secrets.")
+    except Exception:
+        # st.secrets not configured or not running in streamlit context
+        pass
+
+    # 2. 🥈 Fallback: Check .env / Environment Variables (for Local dev)
+    if not api_key:
+        if ENV_PATH.exists():
+            load_dotenv(ENV_PATH)
+        else:
+            load_dotenv()
+        api_key = os.getenv("GEMINI_API_KEY", "").strip()
 
     # Validate Access Tokens
     if not api_key:
-        print("[AI] ERROR: Missing GEMINI_API_KEY environment variable. Deflecting to mock.")
+        print("[AI] ERROR: No GEMINI_API_KEY source found. Deflecting to mock.")
         return _mock_reply(message)
     
-    print(f"[AI] Using Key starting with: {api_key[:6]}...")
+    print(f"[AI] Initializing Cloud Inference with key prefix: {api_key[:6]}...")
 
     try:
         import google.generativeai as genai
@@ -77,11 +89,14 @@ def generate_reply(message: str) -> str:
         
         # Expanded priority mapping based on verified working targets
         models_to_try = [
+            "gemini-1.5-flash", 
+            "gemini-1.5-pro",
+            "gemini-pro",
+            "models/gemini-1.5-flash",
             "models/gemini-2.5-flash", 
             "models/gemini-2.5-pro",
             "models/gemini-2.0-flash", 
             "models/gemini-2.0-flash-001",
-            "models/gemini-1.5-flash", 
             "models/gemini-pro"
         ]
         
@@ -111,7 +126,8 @@ def generate_reply(message: str) -> str:
         
         # Full Failure Recovery
         print(f"[AI] CRITICAL: All Inference Nodes exhausted. Final error details: {last_error}")
-        return _mock_reply(message)
+        return f"[System: All Models Exhausted] Error: {str(last_error)}. Mock: {_mock_reply(message)}"
+
     except Exception as e:
         error_type = type(e).__name__
         if isinstance(e, ModuleNotFoundError):

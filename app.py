@@ -731,13 +731,31 @@ else:
         st.markdown('</div>', unsafe_allow_html=True)
 
     # -------------------------------------------------------------------------
-    # SETTINGS PLACEHOLDER
+    # SETTINGS / INTEGRATIONS 
     # -------------------------------------------------------------------------
     elif page == "⚙️ Integrations":
         st.markdown("<h1 class='main-title'>Settings & Integrations</h1>", unsafe_allow_html=True)
-        st.markdown("<p class='subtitle'>Manage credentials and webhooks.</p>", unsafe_allow_html=True)
+        st.markdown("<p class='subtitle'>Manage credentials and system diagnostics.</p>", unsafe_allow_html=True)
+        
+        st.markdown('<div class="saas-card">', unsafe_allow_html=True)
+        st.markdown("<div class='card-header'>Connection Diagnostic</div>", unsafe_allow_html=True)
+        
+        st.write("Use this to verify if your Streamlit Cloud Secrets are mapped correctly.")
+        
+        if st.button("Test Gemini Connection ⚡", use_container_width=True):
+            with st.spinner("Pinging neural endpoints..."):
+                # Test with a specific short prompt
+                result = generate_reply("System Test: Respond with 'ONLINE' and your model version.")
+                
+                if "[System:" in result or "[MOCK]" in result:
+                    st.error(f"❌ Connection Failed! Raw Error: {result}")
+                else:
+                    st.success(f"✅ Connection Stable! AI Response: {result}")
+                    
+        st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('<div class="saas-card">', unsafe_allow_html=True)
         st.markdown("<div class='card-header'>Environment Keys</div>", unsafe_allow_html=True)
-        st.write("Configuration options will interface with your .env schema here.")
+        st.info("Current Mode: Production (Streamlit Cloud)")
+        st.write("Ensure your `GEMINI_API_KEY` is pasted in the App Settings > Secrets section.")
         st.markdown('</div>', unsafe_allow_html=True)
