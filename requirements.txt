@@ -1,0 +1,34 @@
+# =============================================================================
+# requirements.txt - Project Dependencies
+# =============================================================================
+# Purpose: Lists all Python packages required to run the AI SaaS MVP.
+#          Install with: pip install -r requirements.txt
+# =============================================================================
+
+# --- Web / Dashboard ---
+streamlit                  # Interactive SaaS dashboard UI
+streamlit-autorefresh      # Auto-refresh dashboard for real-time logs
+
+# --- AI / LLM Integration ---
+google-generativeai        # Gemini AI model access
+openai                     # OpenAI API (optional fallback)
+
+# --- Email Automation ---
+google-auth-oauthlib       # Gmail OAuth 2.0 authentication
+google-auth-httplib2
+google-api-python-client   # Gmail API client
+
+# --- WhatsApp Integration ---
+twilio                     # WhatsApp Business API via Twilio
+
+# --- LinkedIn Automation ---
+selenium                   # Browser automation for LinkedIn
+webdriver-manager          # Auto-manage ChromeDriver versions
+
+# --- Database ---
+sqlalchemy                 # ORM for database interactions
+psycopg2-binary            # PostgreSQL driver (optional, use for prod)
+
+# --- Utilities ---
+python-dotenv              # Load environment variables from .env
+requests                   # HTTP requests
