@@ -536,15 +536,18 @@ else:
             if st.button(opt, use_container_width=True, type="primary" if is_active else "secondary", key=f"nav_{opt}"):
                 if st.session_state.page != opt:
                     st.session_state.page = opt
-                    # Injection of Auto-Close Script for Desktop/Tablet/Mobile
+                    # Injection of Delayed Auto-Close Script for Stability
                     st.components.v1.html("""
                         <script>
-                            var buttons = window.parent.document.getElementsByTagName('button');
-                            for (var i = 0; i < buttons.length; i++) {
-                                if (buttons[i].getAttribute('aria-label') === 'Close sidebar') {
-                                    buttons[i].click();
+                            setTimeout(function() {
+                                var buttons = window.parent.document.getElementsByTagName('button');
+                                for (var i = 0; i < buttons.length; i++) {
+                                    if (buttons[i].getAttribute('aria-label') === 'Close sidebar') {
+                                        buttons[i].click();
+                                        break;
+                                    }
                                 }
-                            }
+                            }, 100);
                         </script>
                     """, height=0)
                     st.rerun()
