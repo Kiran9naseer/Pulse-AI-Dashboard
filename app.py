@@ -19,9 +19,9 @@ from automation.whatsapp import send_whatsapp_alert
 init_db()
 
 st.set_page_config(
-    page_title="AI Pulse | Engine",
-    layout="wide",
-    initial_sidebar_state="auto"
+    page_title="AI SaaS",
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 # --- $100/mo SaaS Ultra-Premium Aesthetics (Linear/Vercel Vibe) ---
