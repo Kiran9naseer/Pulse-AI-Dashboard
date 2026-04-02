@@ -18,6 +18,29 @@ from automation.whatsapp import send_whatsapp_alert
 # --- Initialization ---
 init_db()
 
+# Mission-Critical Sidebar Collapse (Simulates Keyboard Shortcut '\')
+if "force_hide" not in st.session_state:
+    st.session_state.force_hide = True
+
+if st.session_state.force_hide:
+    st.components.v1.html("""
+        <script>
+            setTimeout(function() {
+                var parentWindow = window.parent;
+                parentWindow.dispatchEvent(new KeyboardEvent('keydown', {
+                    'key': '\\\\',
+                    'keyCode': 220,
+                    'which': 220,
+                    'code': 'Backslash',
+                    'ctrlKey': false,
+                    'metaKey': false,
+                    'bubbles': true
+                }));
+            }, 300);
+        </script>
+    """, height=0)
+    st.session_state.force_hide = False
+
 st.set_page_config(
     page_title="AI SaaS",
     layout="centered",
