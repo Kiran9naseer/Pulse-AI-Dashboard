@@ -18,6 +18,34 @@ from automation.whatsapp import send_whatsapp_alert
 # --- Initialization ---
 init_db()
 
+# Universal Sidebar Collapse Controller (State-Driven)
+if "should_collapse" not in st.session_state:
+    st.session_state.should_collapse = False
+
+if st.session_state.should_collapse:
+    st.components.v1.html("""
+        <script>
+            function forceCollapse() {
+                var parentDoc = window.parent.document;
+                var selectors = [
+                    'button[aria-label="Close sidebar"]',
+                    'button[aria-label="Close"]',
+                    'section[data-testid="stSidebar"] button'
+                ];
+                for (var s of selectors) {
+                    var btn = parentDoc.querySelector(s);
+                    if (btn) {
+                        btn.click();
+                        return true;
+                    }
+                }
+            }
+            setTimeout(forceCollapse, 50);
+            setTimeout(forceCollapse, 300);
+        </script>
+    """, height=0)
+    st.session_state.should_collapse = False
+
 st.set_page_config(
     page_title="AI SaaS",
     layout="centered",
@@ -536,32 +564,7 @@ else:
             if st.button(opt, use_container_width=True, type="primary" if is_active else "secondary", key=f"nav_{opt}"):
                 if st.session_state.page != opt:
                     st.session_state.page = opt
-                    # Injection of Advanced Auto-Close Script (Increased Stability)
-                    st.components.v1.html("""
-                        <script>
-                            function collapseSidebar() {
-                                var parentDoc = window.parent.document;
-                                // Try finding by aria-label
-                                var selectors = [
-                                    'button[aria-label="Close sidebar"]',
-                                    'button[aria-label="Close"]',
-                                    'section[data-testid="stSidebar"] button'
-                                ];
-                                
-                                for (var s of selectors) {
-                                    var btn = parentDoc.querySelector(s);
-                                    if (btn) {
-                                        btn.click();
-                                        return true;
-                                    }
-                                }
-                                return false;
-                            }
-                            // Run twice to ensure it catches the DOM state
-                            setTimeout(collapseSidebar, 50);
-                            setTimeout(collapseSidebar, 300);
-                        </script>
-                    """, height=0)
+                    st.session_state.should_collapse = True
                     st.rerun()
 
         page = st.session_state.page
