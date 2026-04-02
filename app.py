@@ -18,37 +18,6 @@ from automation.whatsapp import send_whatsapp_alert
 # --- Initialization ---
 init_db()
 
-# Universal Sidebar Collapse Controller (State-Driven)
-if "should_collapse" not in st.session_state:
-    st.session_state.should_collapse = False
-
-if st.session_state.should_collapse:
-    st.components.v1.html("""
-        <script>
-            var attempts = 0;
-            var maxAttempts = 15; // Poll for 3 seconds
-            var interval = setInterval(function() {
-                var parentDoc = window.parent.document;
-                var selectors = [
-                    'button[aria-label="Close sidebar"]',
-                    'button[aria-label="Close"]',
-                    'section[data-testid="stSidebar"] button[kind="header"]'
-                ];
-                for (var s of selectors) {
-                    var btn = parentDoc.querySelector(s);
-                    if (btn) {
-                        btn.click();
-                        clearInterval(interval);
-                        return;
-                    }
-                }
-                attempts++;
-                if (attempts >= maxAttempts) clearInterval(interval);
-            }, 200);
-        </script>
-    """, height=0)
-    st.session_state.should_collapse = False
-
 st.set_page_config(
     page_title="AI SaaS",
     layout="centered",
@@ -567,7 +536,6 @@ else:
             if st.button(opt, use_container_width=True, type="primary" if is_active else "secondary", key=f"nav_{opt}"):
                 if st.session_state.page != opt:
                     st.session_state.page = opt
-                    st.session_state.should_collapse = True
                     st.rerun()
 
         page = st.session_state.page
