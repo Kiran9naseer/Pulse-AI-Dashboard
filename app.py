@@ -25,23 +25,26 @@ if "should_collapse" not in st.session_state:
 if st.session_state.should_collapse:
     st.components.v1.html("""
         <script>
-            function forceCollapse() {
+            var attempts = 0;
+            var maxAttempts = 15; // Poll for 3 seconds
+            var interval = setInterval(function() {
                 var parentDoc = window.parent.document;
                 var selectors = [
                     'button[aria-label="Close sidebar"]',
                     'button[aria-label="Close"]',
-                    'section[data-testid="stSidebar"] button'
+                    'section[data-testid="stSidebar"] button[kind="header"]'
                 ];
                 for (var s of selectors) {
                     var btn = parentDoc.querySelector(s);
                     if (btn) {
                         btn.click();
-                        return true;
+                        clearInterval(interval);
+                        return;
                     }
                 }
-            }
-            setTimeout(forceCollapse, 50);
-            setTimeout(forceCollapse, 300);
+                attempts++;
+                if (attempts >= maxAttempts) clearInterval(interval);
+            }, 200);
         </script>
     """, height=0)
     st.session_state.should_collapse = False
