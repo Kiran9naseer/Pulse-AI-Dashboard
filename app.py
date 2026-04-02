@@ -15,362 +15,169 @@ from automation.linkedin import start_posting
 from automation.email_handler import send_email_alert
 from automation.whatsapp import send_whatsapp_alert
 
-# --- Initialization ---
-init_db()
-
-# Mission-Critical Sidebar Collapse (Simulates Keyboard Shortcut '\')
-if "force_hide" not in st.session_state:
-    st.session_state.force_hide = True
-
-if st.session_state.force_hide:
-    st.components.v1.html("""
-        <script>
-            setTimeout(function() {
-                var parentWindow = window.parent;
-                parentWindow.dispatchEvent(new KeyboardEvent('keydown', {
-                    'key': '\\\\',
-                    'keyCode': 220,
-                    'which': 220,
-                    'code': 'Backslash',
-                    'ctrlKey': false,
-                    'metaKey': false,
-                    'bubbles': true
-                }));
-            }, 300);
-        </script>
-    """, height=0)
-    st.session_state.force_hide = False
-
 st.set_page_config(
     page_title="AI SaaS",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
+# --- Initialization ---
+init_db()
+
 # --- $100/mo SaaS Ultra-Premium Aesthetics (Linear/Vercel Vibe) ---
 st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        /* Background & Root Typography */
-        .stApp {
-            background-color: #fafafa;
-            background-image: 
-                radial-gradient(circle at 10% 0%, rgba(249,115,22, 0.03) 0%, transparent 40%),
-                radial-gradient(circle at 90% 100%, rgba(15,23,42, 0.02) 0%, transparent 40%);
-            color: #111827;
-            font-family: 'Inter', -apple-system, sans-serif;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-font-smoothing: antialiased;
+        /* Dashboard Design System Variables */
+        :root {
+            --primary: #F97316;
+            --primary-hover: #FB923C;
+            --bg-page: #FDFDFD;
+            --bg-nav-inactive: #F8F7F5;
+            --text-main: #1F2937;
+            --text-sub: #6B7280;
+            --border: #E5E7EB;
+            --shadow-card: 0 4px 12px rgba(0,0,0,0.05);
+            --shadow-active: 0 10px 15px -3px rgba(249,115,22, 0.25);
         }
-        
-        /* Enforce Typography + Global Gentle Background */
-        html, body, [class*="css"], .stApp {
+
+        /* Essential Global Reset */
+        .stApp {
+            background-color: var(--bg-page);
             font-family: 'Inter', -apple-system, sans-serif !important;
-        }
-        
-        .stApp {
-            background: radial-gradient(circle at 50% 10%, rgba(249, 115, 22, 0.05) 0%, transparent 60%),
-                        radial-gradient(circle at 10% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 40%),
-                        #f8fafc !important;
+            color: var(--text-main);
         }
 
-        /* Container & Hierarchy Formatting (Restored safely for layout stability) */
+        /* 1. Centered Workspace & Spacing */
         .block-container {
-            padding-top: 3.5rem;
-            padding-bottom: 5rem;
-            animation: appFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            max-width: 900px !important;
+            padding-top: 4.5rem !important;
+            padding-bottom: 6rem !important;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        @keyframes appFadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Elegant Headings */
-        h1, h2, h3, h4 {
-            color: #030712 !important;
-            font-weight: 700 !important;
-            letter-spacing: -0.03em;
-        }
-        .main-title {
-            font-size: 2.5rem;
+        /* 2. Heading Improvements */
+        h1.main-title {
+            font-size: 2.8rem !important;
             font-weight: 800 !important;
-            background: linear-gradient(180deg, #111827 0%, #374151 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0px;
-            letter-spacing: -0.04em;
-        }
-        .subtitle {
-            font-size: 1.05rem;
-            color: #6b7280;
-            margin-top: 6px;
-            margin-bottom: 40px;
-            font-weight: 400;
-            letter-spacing: -0.01em;
+            color: #1F2937 !important;
+            letter-spacing: -0.04em !important;
+            margin-bottom: 24px !important;
+            line-height: 1.1 !important;
         }
 
-        /* Glassmorphism Auth / Container Layering */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 24px;
-            padding: 48px;
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.02),
-                0 20px 40px -10px rgba(0, 0, 0, 0.06),
-                0 0 40px rgba(249, 115, 22, 0.03);
-            transition: transform 0.3s ease;
+        p.subtitle {
+            font-size: 1.15rem !important;
+            color: var(--text-sub) !important;
+            margin-bottom: 40px !important;
+            letter-spacing: -0.01em !important;
         }
 
-        /* Premium Dashboard Cards */
-        .saas-card {
-            background: #ffffff;
-            border: 1px solid #f3f4f6;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 
-                0 1px 2px rgba(0,0,0,0.02), 
-                0 4px 12px rgba(0,0,0,0.02);
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .saas-card:hover {
-            transform: scale(1.02);
-            box-shadow: 
-                0 4px 6px rgba(0,0,0,0.02),
-                0 20px 25px -5px rgba(0,0,0,0.05),
-                0 8px 10px -6px rgba(0,0,0,0.01);
-            border-color: #e5e7eb;
-            z-index: 5;
-        }
-        
-        .card-header {
-            font-size: 15px;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            letter-spacing: -0.01em;
-        }
-        .card-header svg {
-            margin-right: 12px;
-            color: #9ca3af;
-        }
-
-        /* Highly Styled Metric Numbers */
-        .metric-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #030712;
-            margin-top: 6px;
-            letter-spacing: -0.03em;
-        }
-        .metric-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-
-        /* Elegant Status Badge */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 14px 20px;
-            border-radius: 16px;
-            font-weight: 500;
-            font-size: 14px;
-            width: 100%;
-        }
-        .badge-running {
-            background: linear-gradient(90deg, #ecfdf5 0%, #f0fdf4 100%);
-            color: #065f46;
-            border: 1px solid #d1fae5;
-            box-shadow: inset 0 1px 0 #ffffff;
-        }
-        .badge-stopped {
-            background: linear-gradient(90deg, #fef2f2 0%, #fff1f2 100%);
-            color: #991b1b;
-            border: 1px solid #fee2e2;
-            box-shadow: inset 0 1px 0 #ffffff;
-        }
-        .dot { height: 8px; width: 8px; border-radius: 50%; margin-right: 12px; }
-        .dot-green { background-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2); }
-        .dot-red { background-color: #ef4444; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2); }
-
-        /* Next-Gen Buttons with Glow */
-        button[kind="primary"] {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
-            border: 1px solid #c2410c !important;
-            box-shadow: 
-                0 4px 12px rgba(249, 115, 22, 0.3), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
-            border-radius: 10px !important; /* Soft premium curve */
-            color: #ffffff !important;
+        /* 3. Horizontal Navbar / Tabs Improvement */
+        div.stButton > button {
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            border-radius: 99px !important;
+            font-family: 'Inter', sans-serif !important;
             font-weight: 600 !important;
-            font-size: 14.5px !important;
             padding: 10px 20px !important;
-            min-height: 44px !important;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            letter-spacing: -0.01em;
-        }
-        button[kind="primary"]:hover {
-            box-shadow: 
-                0 6px 20px rgba(249, 115, 22, 0.45), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-            transform: translateY(-2px) scale(1.02);
-            filter: brightness(1.05);
-        }
-        button[kind="primary"]:active { transform: translateY(1px) scale(0.98) !important; }
-        
-        button[kind="secondary"] {
-            background: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 10px !important;
-            color: #334155 !important;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
-            font-weight: 600 !important;
-            font-size: 14.5px !important;
-            padding: 10px 20px !important;
-            min-height: 44px !important;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        }
-        button[kind="secondary"]:hover {
-            background: #f8fafc !important;
-            border-color: #cbd5e1 !important;
-            transform: translateY(-2px);
-            color: #0f172a !important;
+            height: auto !important;
+            border: 1px solid var(--border) !important;
+            margin-bottom: 0px !important;
+            background-color: var(--bg-nav-inactive) !important;
+            color: var(--text-main) !important;
         }
 
-        /* Rounded Alerts */
-        div[data-testid="stAlert"] {
-            border-radius: 16px !important;
+        /* Scale Animation & Hover for ALL buttons */
+        div.stButton > button:hover {
+            transform: scale(1.02) !important;
+            border-color: var(--primary-hover) !important;
+            background-color: #F3F4F6 !important;
+            color: var(--primary) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+        }
+
+        /* Active Navbar Tab (Priority Styling) - Targeting Primary type buttons */
+        div.stButton > button[kind="primary"] {
+            background-color: var(--primary) !important;
+            color: white !important;
             border: none !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
-            padding: 16px 20px !important;
+            box-shadow: var(--shadow-active) !important;
         }
-        div[data-testid="stAlert"][data-baseweb="notification"] {
-            background-color: #fef2f2 !important; /* Soft red for errors */
-            color: #991b1b !important;
-        }
-
-        /* Crisp Inputs */
-        div[data-baseweb="input"] {
-            border-radius: 16px !important;
-            background-color: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.02) !important;
-            transition: all 0.2s ease;
-            font-size: 14px !important;
-        }
-        div[data-baseweb="input"]:focus-within {
-            border-color: #ff6a00 !important;
-            box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.15), inset 0 1px 2px rgba(0,0,0,0.01) !important;
-        }
-
-        /* Sophisticated Timeline Logs */
-        .logs-scroll { max-height: 380px; overflow-y: auto; padding: 12px 20px 12px 10px; }
-        .timeline { position: relative; padding-left: 24px; margin-top: 8px; }
-        .timeline::before {
-            content: ''; position: absolute; left: 8px; top: 6px; bottom: 0;
-            width: 2px; background-color: #f3f4f6; border-radius: 2px;
-        }
-        .timeline-item { position: relative; margin-bottom: 26px; animation: slideInX 0.4s ease forwards; }
-        @keyframes slideInX { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
         
-        .timeline-dot {
-            position: absolute; left: -21.5px; top: 5.5px; width: 11px; height: 11px;
-            border-radius: 50%; border: 2.5px solid #ffffff; box-shadow: 0 0 0 1px #cbd5e1;
+        div.stButton > button[kind="primary"]:hover {
+            background-color: var(--primary-hover) !important;
+            color: white !important;
         }
-        .dot-exec { background-color: #10b981; box-shadow: 0 0 0 1.5px #a7f3d0; } 
-        .dot-sys { background-color: #ff6a00; box-shadow: 0 0 0 1.5px #fed7aa; }  
-        
-        .timeline-content {
-            background: #ffffff; border: 1px solid #f1f5f9; border-radius: 16px;
-            padding: 14px 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-            transition: all 0.2s ease;
-        }
-        .timeline-content:hover { border-color: #e2e8f0; box-shadow: 0 4px 8px rgba(0,0,0,0.04); background: #fdfdfd; }
-        .timeline-time { font-size: 0.65rem; color: #94a3b8; margin-bottom: 6px; font-family: ui-monospace, monospace; letter-spacing: 0.05em; text-transform: uppercase; }
-        .timeline-text { font-size: 0.85rem; color: #1e293b; font-weight: 500; }
 
-        /* Ultimate Sidebar UI */
+        /* 4. Infrastructure Cards Refinement */
+        .saas-card {
+            background: #FFFFFF !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 12px !important;
+            padding: 30px !important;
+            box-shadow: var(--shadow-card) !important;
+            transition: all 0.3s ease;
+            margin-bottom: 30px !important;
+        }
+
+        .saas-card:hover {
+            box-shadow: 0 12px 30px -10px rgba(0,0,0,0.08) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Metric Detail Styling */
+        .metric-label {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            color: var(--text-sub) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            margin-bottom: 6px;
+        }
+        .metric-value {
+            font-size: 32px !important;
+            font-weight: 800 !important;
+            color: #1F2937 !important;
+            letter-spacing: -0.02em !important;
+        }
+
+        /* Sidebar UI */
         [data-testid="stSidebar"] {
             background-color: #ffffff !important;
             border-right: 1px solid #f1f5f9;
         }
-        .sidebar-logo { display:flex; align-items:center; margin-bottom: 24px; margin-top: 10px; }
-        .sidebar-logo-icon {
-            background: linear-gradient(135deg, #111827 0%, #374151 100%);
-            color: white; width: 34px; height: 34px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 16px; margin-right: 12px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Premium User Profile Card in Sidebar */
-        .user-profile-card {
-            background: #ffffff;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
+        .sidebar-logo {
             display: flex;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-            transition: all 0.2s ease;
+            gap: 12px;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        .sidebar-logo-icon {
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            border-radius: 10px;
+            display: flex;
+        }
+        .user-profile-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
             margin-bottom: 12px;
-            cursor: pointer;
-        }
-        .user-profile-card:hover {
-            border-color: #d1d5db;
-            background: #f9fafb;
-        }
-        
-        /* Sidebar active item highlight */
-        div[data-testid="stRadio"] > div { gap: 4px; }
-        div[data-testid="stRadio"] label {
-            padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-weight: 500 !important; font-size: 14px !important; color: #4b5563 !important;
-        }
-        div[data-testid="stRadio"] label:hover { background-color: #f3f4f6; color: #111827 !important; }
-        div[data-testid="stRadio"] [data-checked="true"] {
-            background-color: #fff7ed !important; 
-            color: #ea580c !important; 
-            font-weight: 600 !important;
-            box-shadow: inset 3px 0 0 #f97316;
-            border-radius: 4px 8px 8px 4px;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        
-        /* --- RESPONSIVE MOBILE FIXES --- */
-        @media (max-width: 768px) {
-            /* Sidebar takes 80% of screen but not full width */
-            div[data-testid="stSidebar"] {
-                width: 80vw !important;
-                max-width: 300px !important;
-            }
-            [data-testid="stSidebar"] {
-                background: rgba(255,255,255,0.96) !important;
-                backdrop-filter: blur(15px);
-                border-right: 1px solid #e5e7eb;
-                transition: all 0.3s ease-in-out;
-            }
-            .main-title { font-size: 1.8rem !important; }
-            .subtitle { font-size: 0.9rem !important; margin-bottom: 24px !important; }
-        }
+        /* Hide Streamlit Header Footer */
+        [data-testid="stHeader"], [data-testid="stFooter"] { visibility: hidden !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -378,6 +185,8 @@ st.markdown("""
 # =============================================================================
 # SESSION STATE INIT
 # =============================================================================
+if "page" not in st.session_state:
+    st.session_state.page = "📊 Pipeline Dashboard"
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "current_user" not in st.session_state:
@@ -534,8 +343,33 @@ else:
     )
 
     # -------------------------------------------------------------------------
-    # FIXED SIDEBAR
+    # MAIN WORKSPACE
     # -------------------------------------------------------------------------
+    # TOP NAVIGATION MENU (Inside Main Page to avoid Sidebar bugs)
+    # Navbar Spacing
+    st.markdown("<div style='margin-bottom: 30px;'></div>", unsafe_allow_html=True)
+    
+    col_nav1, col_nav2, col_nav3 = st.columns([1,1,1])
+    
+    with col_nav1:
+        if st.button("📊 Dashboard", use_container_width=True, type="primary" if st.session_state.page == "📊 Pipeline Dashboard" else "secondary"):
+            st.session_state.page = "📊 Pipeline Dashboard"
+            st.rerun()
+    with col_nav2:
+        if st.button("🧠 AI Engine", use_container_width=True, type="primary" if st.session_state.page == "🧠 Inference Engine" else "secondary"):
+            st.session_state.page = "🧠 Inference Engine"
+            st.rerun()
+    with col_nav3:
+        if st.button("⚙️ Integrations", use_container_width=True, type="primary" if st.session_state.page == "⚙️ Integrations" else "secondary"):
+            st.session_state.page = "⚙️ Integrations"
+            st.rerun()
+
+    # Content Spacing
+    st.markdown("<div style='margin-bottom: 35px;'></div>", unsafe_allow_html=True)
+    
+    page = st.session_state.page
+
+    # Sidebar remains only for Logo and Sign out (Starts Collapsed)
     with st.sidebar:
         st.markdown("""
             <div class="sidebar-logo">
@@ -545,27 +379,9 @@ else:
                 <div style="font-weight: 800; font-size: 19px; color:#030712; letter-spacing:-0.03em;">Pulse.ai</div>
             </div>
         """, unsafe_allow_html=True)
-        
         st.write("---")
         
-        # Navigation Logic with AUTOMATIC JS-COLLAPSE
-        if "page" not in st.session_state:
-            st.session_state.page = "📊 Pipeline Dashboard"
-
-        nav_options = ["📊 Pipeline Dashboard", "🧠 Inference Engine", "⚙️ Integrations"]
-        
-        for opt in nav_options:
-            is_active = st.session_state.page == opt
-            if st.button(opt, use_container_width=True, type="primary" if is_active else "secondary", key=f"nav_{opt}"):
-                if st.session_state.page != opt:
-                    st.session_state.page = opt
-                    st.rerun()
-
-        page = st.session_state.page
-        
-        st.write("---")
-        
-        # Premium User Profile Card
+        # Profile Card
         st.markdown(f"""
             <div class='user-profile-card'>
                 <div style='width:36px; height:36px; border-radius: 8px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display:flex; align-items:center; justify-content:center; margin-right: 12px; font-weight:700; color:#334155; border: 1px solid #cbd5e1;'>
@@ -575,13 +391,10 @@ else:
                     <div style='font-size:13px; font-weight: 600; color:#111827; letter-spacing:-0.01em;'>{st.session_state.current_user}</div>
                     <div style='font-size:11px; color:#6b7280; font-weight: 500;'>Enterprise Plan</div>
                 </div>
-                <div style='color: #9ca3af;'>
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </div>
             </div>
         """, unsafe_allow_html=True)
         
-        if st.button("Sign out", type="secondary", use_container_width=True):
+        if st.button("Sign out", type="secondary", use_container_width=True, key="signout_btn"):
             st.session_state.logged_in = False
             st.session_state.current_user = None
             st.session_state.automation_running = False
