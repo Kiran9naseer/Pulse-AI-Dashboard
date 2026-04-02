@@ -536,18 +536,30 @@ else:
             if st.button(opt, use_container_width=True, type="primary" if is_active else "secondary", key=f"nav_{opt}"):
                 if st.session_state.page != opt:
                     st.session_state.page = opt
-                    # Injection of Delayed Auto-Close Script for Stability
+                    # Injection of Advanced Auto-Close Script (Increased Stability)
                     st.components.v1.html("""
                         <script>
-                            setTimeout(function() {
-                                var buttons = window.parent.document.getElementsByTagName('button');
-                                for (var i = 0; i < buttons.length; i++) {
-                                    if (buttons[i].getAttribute('aria-label') === 'Close sidebar') {
-                                        buttons[i].click();
-                                        break;
+                            function collapseSidebar() {
+                                var parentDoc = window.parent.document;
+                                // Try finding by aria-label
+                                var selectors = [
+                                    'button[aria-label="Close sidebar"]',
+                                    'button[aria-label="Close"]',
+                                    'section[data-testid="stSidebar"] button'
+                                ];
+                                
+                                for (var s of selectors) {
+                                    var btn = parentDoc.querySelector(s);
+                                    if (btn) {
+                                        btn.click();
+                                        return true;
                                     }
                                 }
-                            }, 100);
+                                return false;
+                            }
+                            // Run twice to ensure it catches the DOM state
+                            setTimeout(collapseSidebar, 50);
+                            setTimeout(collapseSidebar, 300);
                         </script>
                     """, height=0)
                     st.rerun()
