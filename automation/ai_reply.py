@@ -61,10 +61,12 @@ def generate_reply(message: str) -> str:
     # 1. 🥇 Priority: Check Streamlit Secrets (for Cloud deployment)
     try:
         if "GEMINI_API_KEY" in st.secrets:
-            api_key = st.secrets["GEMINI_API_KEY"]
-            print("[AI] Found GEMINI_API_KEY in Streamlit Cloud Secrets.")
+            # Handle both string and nested TOML formats
+            raw_key = st.secrets["GEMINI_API_KEY"]
+            # Strict cleaning: remove whitespace and any accidental wrapping quotes
+            api_key = str(raw_key).strip().replace('"', '').replace("'", "")
+            print("[AI] Found and cleaned GEMINI_API_KEY from Secrets.")
     except Exception:
-        # st.secrets not configured or not running in streamlit context
         pass
 
     # 2. 🥈 Fallback: Check .env / Environment Variables (for Local dev)
@@ -73,7 +75,9 @@ def generate_reply(message: str) -> str:
             load_dotenv(ENV_PATH)
         else:
             load_dotenv()
-        api_key = os.getenv("GEMINI_API_KEY", "").strip()
+        raw_env_key = os.getenv("GEMINI_API_KEY", "")
+        # Strict cleaning for environment variables too
+        api_key = str(raw_env_key).strip().replace('"', '').replace("'", "")
 
     # Validate Access Tokens
     if not api_key:

@@ -10,7 +10,7 @@ streamlit                  # Interactive SaaS dashboard UI
 streamlit-autorefresh      # Auto-refresh dashboard for real-time logs
 
 # --- AI / LLM Integration ---
-google-generativeai        # Gemini AI model access
+google-generativeai>=0.8.0  # Latest Gemini support
 openai                     # OpenAI API (optional fallback)
 
 # --- Email Automation ---
