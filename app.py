@@ -525,7 +525,7 @@ else:
         
         st.write("---")
         
-        # Navigation Logic with Auto-Collapse for Mobile
+        # Navigation Logic with AUTOMATIC JS-COLLAPSE
         if "page" not in st.session_state:
             st.session_state.page = "📊 Pipeline Dashboard"
 
@@ -533,10 +533,20 @@ else:
         
         for opt in nav_options:
             is_active = st.session_state.page == opt
-            # Highlight current page and force collapse on click
-            if st.button(opt, use_container_width=True, type="primary" if is_active else "secondary"):
+            if st.button(opt, use_container_width=True, type="primary" if is_active else "secondary", key=f"nav_{opt}"):
                 if st.session_state.page != opt:
                     st.session_state.page = opt
+                    # Injection of Auto-Close Script for Desktop/Tablet/Mobile
+                    st.components.v1.html("""
+                        <script>
+                            var buttons = window.parent.document.getElementsByTagName('button');
+                            for (var i = 0; i < buttons.length; i++) {
+                                if (buttons[i].getAttribute('aria-label') === 'Close sidebar') {
+                                    buttons[i].click();
+                                }
+                            }
+                        </script>
+                    """, height=0)
                     st.rerun()
 
         page = st.session_state.page
