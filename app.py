@@ -42,7 +42,54 @@ st.markdown("""
             --shadow-active: 0 10px 15px -3px rgba(249,115,22, 0.25);
         }
 
-        /* Essential Global Reset */
+        /* 5. Logs UI Improvements */
+        .logs-container {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .log-entry-card {
+            background: #FFFFFF !important;
+            border: 1px solid #E5E7EB !important;
+            border-radius: 10px !important;
+            padding: 12px 16px !important;
+            margin-bottom: 10px !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+            transition: border-color 0.2s ease;
+        }
+
+        .log-entry-card:hover { border-color: #D1D5DB !important; }
+
+        .log-timestamp {
+            font-size: 11px !important;
+            color: #6B7280;
+            font-family: ui-monospace, monospace;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .log-text {
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            color: #1F2937;
+            line-height: 1.4;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 4px;
+        }
+        .status-enabled { background: #DCFCE7; color: #166534; }
+        .status-halted { background: #FEE2E2; color: #991B1B; }
+        .status-executed { background: #FFEDD5; color: #9A3412; }
+
+        /* Custom Scrollbar & Aesthetics */
         .stApp {
             background-color: var(--bg-page);
             font-family: 'Inter', -apple-system, sans-serif !important;
@@ -175,6 +222,58 @@ st.markdown("""
             align-items: center;
             margin-bottom: 12px;
         }
+
+        /* 5. Logs UI Improvements */
+        .logs-container {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .log-entry-card {
+            background: #FFFFFF !important;
+            border: 1px solid #E5E7EB !important;
+            border-radius: 10px !important;
+            padding: 12px 16px !important;
+            margin-bottom: 10px !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+            transition: border-color 0.2s ease;
+            text-align: left !important;
+        }
+
+        .log-entry-card:hover { border-color: #D1D5DB !important; }
+
+        .log-timestamp {
+            font-size: 11px !important;
+            color: #6B7280;
+            font-family: ui-monospace, monospace;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .log-text {
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            color: #1F2937;
+            line-height: 1.4;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 4px;
+        }
+        .status-enabled { background: #DCFCE7 !important; color: #166534 !important; }
+        .status-halted { background: #FEE2E2 !important; color: #991B1B !important; }
+        .status-executed { background: #FFEDD5 !important; color: #9A3412 !important; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
 
         /* Hide Streamlit Header Footer */
         [data-testid="stHeader"], [data-testid="stFooter"] { visibility: hidden !important; }
@@ -454,7 +553,7 @@ else:
             st.write("")
             b1, b2 = st.columns(2)
             with b1:
-                if st.button("Engage Node ⚡", type="primary", disabled=st.session_state.automation_running, use_container_width=True):
+                if st.button("Engage ⚡", type="primary", disabled=st.session_state.automation_running, use_container_width=True):
                     st.session_state.automation_running = True
                     add_log(f"[SYS] Execution thread enabled.")
                     if st.session_state.pref_linkedin: start_posting()
@@ -462,7 +561,7 @@ else:
                     if st.session_state.pref_whatsapp: send_whatsapp_alert("+1234567890")
                     st.rerun()
             with b2:
-                if st.button("Halt Node 🛑", type="secondary", disabled=not st.session_state.automation_running, use_container_width=True):
+                if st.button("Halt 🛑", type="secondary", disabled=not st.session_state.automation_running, use_container_width=True):
                     st.session_state.automation_running = False
                     add_log(f"[SYS] Execution thread halted.")
                     st.rerun()
@@ -512,23 +611,17 @@ else:
         if not display_logs:
             st.markdown("<p style='color:#9ca3af; font-size:14px; text-align:center; padding: 30px;'>Awaiting system events...</p>", unsafe_allow_html=True)
         else:
-            html_logs = '<div class="logs-scroll"><div class="timeline">'
+            html_logs = "<div class='logs-container'>"
             for log in display_logs:
                 msg = log['message']
-                
-                # Determine node type relative mapping
-                is_err = "Error" in msg or "Fail" in msg or "404" in msg
-                is_exec = "[EXEC]" in msg
-                
-                if is_err: dot_class = "dot-err"
-                elif is_exec: dot_class = "dot-exec"
-                else: dot_class = "dot-sys"
-                
+                ts = log['timestamp']
                 clean_msg = msg.replace("[EXEC] ", "").replace("[SYS] ", "")
-                
-                html_logs += f"<div class='timeline-item'><div class='timeline-dot {dot_class}'></div><div class='timeline-content'><div class='timeline-time'>{log['timestamp']}</div><div class='timeline-text'>{clean_msg}</div></div></div>"
-                
-            html_logs += '</div></div>'
+                styled_text = clean_msg
+                if "enabled" in clean_msg.lower(): styled_text = clean_msg.replace("enabled", "<span class='status-pill status-enabled'>enabled</span>")
+                elif "halted" in clean_msg.lower(): styled_text = clean_msg.replace("halted", "<span class='status-pill status-halted'>halted</span>")
+                elif "executed" in clean_msg.lower(): styled_text = clean_msg.replace("executed", "<span class='status-pill status-executed'>executed</span>")
+                html_logs += f"<div class='log-entry-card'><div class='log-timestamp'>{ts}</div><div class='log-text'>{styled_text}</div></div>"
+            html_logs += "</div>"
             st.markdown(html_logs, unsafe_allow_html=True)
             
         st.markdown('</div>', unsafe_allow_html=True)
@@ -571,15 +664,60 @@ else:
     elif page == "⚙️ Integrations":
         st.markdown("<h1 class='main-title'>Settings & Integrations</h1>", unsafe_allow_html=True)
         st.markdown("<p class='subtitle'>Manage credentials and system configurations.</p>", unsafe_allow_html=True)
-        
-        st.markdown('<div class="saas-card">', unsafe_allow_html=True)
-        st.markdown("<div class='card-header'>Environment Keys</div>", unsafe_allow_html=True)
-        st.info("Status: Connected (Production Mode)")
-        st.write("Your `GEMINI_API_KEY` is currently managed via Streamlit Secrets for maximum security.")
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        st.markdown('<div class="saas-card">', unsafe_allow_html=True)
-        st.markdown("<div class='card-header'>System Configuration</div>", unsafe_allow_html=True)
-        st.write("Model Fallback Strategy: Enabled (Flash 2.5 / Pro 1.5)")
-        st.write("Regional Latency: Optimized")
-        st.markdown('</div>', unsafe_allow_html=True)
+
+        # Integration Status Cards - 3 columns
+        c1, c2, c3 = st.columns(3)
+
+        integrations = [
+            {
+                "col": c1, "icon": "🔗", "name": "LinkedIn", "desc": "Graph API v2",
+                "detail": "Outreach & lead generation pipeline",
+                "active": st.session_state.get("pref_linkedin", True)
+            },
+            {
+                "col": c2, "icon": "📧", "name": "Email Relay", "desc": "AWS SES",
+                "detail": "Automated cold email sequences",
+                "active": st.session_state.get("pref_email", True)
+            },
+            {
+                "col": c3, "icon": "💬", "name": "WhatsApp", "desc": "Cloud API",
+                "detail": "Real-time lead notifications",
+                "active": st.session_state.get("pref_whatsapp", True)
+            },
+        ]
+
+        for item in integrations:
+            status_label = "● Live" if item["active"] else "● Offline"
+            status_color = "#22C55E" if item["active"] else "#EF4444"
+            badge_bg = "#DCFCE7" if item["active"] else "#FEE2E2"
+            with item["col"]:
+                st.markdown(f"""
+                <div class="saas-card" style="text-align:center; padding: 28px 20px;">
+                    <div style="font-size:2.2rem; margin-bottom:12px;">{item["icon"]}</div>
+                    <div style="font-weight:700; font-size:15px; color:#1F2937; margin-bottom:4px;">{item["name"]}</div>
+                    <div style="font-size:12px; color:#6B7280; margin-bottom:14px;">{item["desc"]}</div>
+                    <div style="display:inline-block; background:{badge_bg}; color:{status_color}; font-size:12px; font-weight:700; padding:4px 12px; border-radius:99px; margin-bottom:14px;">{status_label}</div>
+                    <div style="font-size:12px; color:#9CA3AF;">{item["detail"]}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+        # Gemini AI Card (full width)
+        st.markdown("""
+        <div class="saas-card" style="display:flex; align-items:center; gap:24px; padding:24px 30px;">
+            <div style="font-size:2.5rem;">🤖</div>
+            <div style="flex:1;">
+                <div style="font-weight:700; font-size:15px; color:#1F2937; margin-bottom:4px;">Gemini AI Engine</div>
+                <div style="font-size:13px; color:#6B7280;">Model: gemini-2.0-flash &nbsp;|&nbsp; Avg. Response: ~1.2s &nbsp;|&nbsp; Mode: Production</div>
+            </div>
+            <div style="background:#DCFCE7; color:#166534; font-size:12px; font-weight:700; padding:6px 16px; border-radius:99px;">● Connected</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Platform toggles to actually control them
+        st.markdown("<div class='saas-card'>", unsafe_allow_html=True)
+        st.markdown("<div class='card-header'>Enable / Disable Channels</div>", unsafe_allow_html=True)
+        t1, t2, t3 = st.columns(3)
+        with t1: st.toggle("LinkedIn Graph API", key="pref_linkedin")
+        with t2: st.toggle("SES Email Relay", key="pref_email")
+        with t3: st.toggle("WhatsApp Cloud API", key="pref_whatsapp")
+        st.markdown("</div>", unsafe_allow_html=True)
