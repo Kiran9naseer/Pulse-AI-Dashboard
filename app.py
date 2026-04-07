@@ -467,7 +467,7 @@ else:
     # Navbar Spacing
     st.markdown("<div style='margin-bottom: 30px;'></div>", unsafe_allow_html=True)
     
-    empty_left, col_nav1, col_nav2, col_nav3, empty_right = st.columns([1, 1.2, 1.2, 1.2, 1])
+    col_nav1, col_nav2, col_nav3 = st.columns(3)
     
     with col_nav1:
         if st.button("📊 Dashboard", use_container_width=True, type="primary" if st.session_state.page == "📊 Pipeline Dashboard" else "secondary"):
@@ -540,9 +540,8 @@ else:
 
         
         # 2. STATUS + ACTIONS 
-        st.markdown('<div class="saas-card">', unsafe_allow_html=True)
         st.markdown("""
-            <div class='card-header'>
+            <div style='font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;'>
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 Core Engine State
             </div>
@@ -583,16 +582,13 @@ else:
                 if st.button("Halt 🛑", type="secondary", disabled=not st.session_state.automation_running, use_container_width=True):
                     st.session_state.automation_running = False
                     add_log(f"[SYS] Execution thread halted.")
-                    st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-
+        st.write("")
 
         # 3. MIDDLE TIER - CHART & TOGGLES
         mid_col1, mid_col2 = st.columns([2, 1], gap="large")
         
         with mid_col1:
-            st.markdown('<div class="saas-card" style="height: 100%;">', unsafe_allow_html=True)
-            st.markdown("<div class='card-header'>Performance Analytics</div>", unsafe_allow_html=True)
+            st.markdown("<div style='font-size: 1rem; font-weight: 700; margin-bottom: 12px;'>Performance Analytics</div>", unsafe_allow_html=True)
             
             # Smooth Altair Area Chart satisfying explicit 'Smooth Curve, Custom gradient' constraints
             chart = alt.Chart(chart_data.reset_index().melt('index', var_name='Type', value_name='Volume')).mark_area(
@@ -604,21 +600,17 @@ else:
                 tooltip=['Type', 'Volume']
             ).configure_view(strokeWidth=0)
             st.altair_chart(chart, use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
             
         with mid_col2:
-            st.markdown('<div class="saas-card" style="height: 100%;">', unsafe_allow_html=True)
-            st.markdown("<div class='card-header'>Webhooks & Integrations</div>", unsafe_allow_html=True)
+            st.markdown("<div style='font-size: 1rem; font-weight: 700; margin-bottom: 12px;'>Webhooks & Integrations</div>", unsafe_allow_html=True)
             st.toggle("LinkedIn Graph API", key="pref_linkedin", disabled=st.session_state.automation_running)
             st.toggle("SES Email Relay", key="pref_email", disabled=st.session_state.automation_running)
             st.toggle("WhatsApp Cloud API", key="pref_whatsapp", disabled=st.session_state.automation_running)
-            st.markdown('</div>', unsafe_allow_html=True)
 
 
         # 4. TIMELINE ACTIVITY LOGS
-        st.markdown('<div class="saas-card" style="margin-bottom: 0px;">', unsafe_allow_html=True)
         st.markdown("""
-            <div class='card-header'>
+            <div style='font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;'>
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
                 System Traces & Execution Logs
             </div>
@@ -674,8 +666,6 @@ else:
 """
             html_logs += "</div>"
             st.markdown(html_logs, unsafe_allow_html=True)
-            
-        st.markdown('</div>', unsafe_allow_html=True)
 
 
     # -------------------------------------------------------------------------
@@ -685,8 +675,7 @@ else:
         st.markdown("<h1 class='main-title'>Model Sandbox</h1>", unsafe_allow_html=True)
         st.markdown("<p class='subtitle'>Test standard generations manually in isolation.</p>", unsafe_allow_html=True)
         
-        st.markdown('<div class="saas-card">', unsafe_allow_html=True)
-        st.markdown("<div class='card-header'>Direct LLM Interface</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 1rem; font-weight: 700; margin-bottom: 12px;'>Direct LLM Interface</div>", unsafe_allow_html=True)
         
         user_message = st.text_area("Input Context", placeholder="Type a prompt to test your logic...", height=120)
         st.write("")
@@ -707,7 +696,6 @@ else:
                     else:
                         st.markdown("<div style='font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Target Response</div>", unsafe_allow_html=True)
                         st.markdown(f"<div style='background: #f8fafc; border: 1px solid #e5e7eb; padding: 20px; border-radius: 12px; font-size: 14px; color: #1e293b; line-height: 1.6;'>{ai_response}</div>", unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # -------------------------------------------------------------------------
     # SETTINGS / INTEGRATIONS 
@@ -765,10 +753,8 @@ else:
         """, unsafe_allow_html=True)
 
         # Platform toggles to actually control them
-        st.markdown("<div class='saas-card'>", unsafe_allow_html=True)
-        st.markdown("<div class='card-header'>Enable / Disable Channels</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 1rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px;'>Enable / Disable Channels</div>", unsafe_allow_html=True)
         t1, t2, t3 = st.columns(3)
         with t1: st.toggle("LinkedIn Graph API", key="pref_linkedin")
         with t2: st.toggle("SES Email Relay", key="pref_email")
         with t3: st.toggle("WhatsApp Cloud API", key="pref_whatsapp")
-        st.markdown("</div>", unsafe_allow_html=True)
