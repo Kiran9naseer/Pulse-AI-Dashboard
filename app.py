@@ -285,18 +285,11 @@ st.markdown("""
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
 
-        /* Hide Streamlit Header Footer, Toolbar, and Community Cloud Badges */
-        [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stToolbar"], [data-testid="stDecoration"] { 
-            visibility: hidden !important; 
-            display: none !important; 
-        }
-        
-        /* Hide Bottom-Right Developer/Viewer Badge */
-        .viewerBadge_container__1QSob,
-        .viewerBadge_link__1S137,
-        .viewerBadge_container__1QSob,
-        #MainMenu,
-        footer {
+        /* Hide ALL Streamlit branding, deployment buttons, and toolbars */
+        #MainMenu, footer, header, .stDeployButton, 
+        [data-testid="stToolbar"], [data-testid="stDecoration"],
+        [data-testid="stStatusWidget"], [data-testid="stAppDeployButton"],
+        .viewerBadge_container__1QSob, .viewerBadge_link__1S137 {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
