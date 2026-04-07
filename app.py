@@ -285,8 +285,22 @@ st.markdown("""
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
 
-        /* Hide Streamlit Header Footer */
-        [data-testid="stHeader"], [data-testid="stFooter"] { visibility: hidden !important; }
+        /* Hide Streamlit Header Footer, Toolbar, and Community Cloud Badges */
+        [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stToolbar"], [data-testid="stDecoration"] { 
+            visibility: hidden !important; 
+            display: none !important; 
+        }
+        
+        /* Hide Bottom-Right Developer/Viewer Badge */
+        .viewerBadge_container__1QSob,
+        .viewerBadge_link__1S137,
+        .viewerBadge_container__1QSob,
+        #MainMenu,
+        footer {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -523,7 +537,7 @@ else:
         # 1. TOP STATS CARDS
         m1, m2, m3, m4 = st.columns(4)
         with m1:
-            st.markdown(f'<div class="saas-card" style="padding: 20px;"><div class="metric-label">Total Volume</div><div class="metric-value">{total_runs + 2042}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="saas-card" style="padding: 20px;"><div class="metric-label">Total Volume</div><div class="metric-value">{total_runs}</div></div>', unsafe_allow_html=True)
         with m2:
             st.markdown(f'<div class="saas-card" style="padding: 20px;"><div class="metric-label">Active Endpoints</div><div class="metric-value">{active_flows}</div></div>', unsafe_allow_html=True)
         with m3:
@@ -622,19 +636,19 @@ else:
         
         if not display_logs:
             empty_state_html = """
-            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 20px; background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, rgba(248, 250, 252, 0.8) 100%); border-radius: 12px; margin-top: 10px;">
-                <div style="font-size: 3rem; margin-bottom: 12px; animation: pulseFade 2.5s infinite ease-in-out;">🛡️</div>
-                <div style="font-size: 15px; font-weight: 600; color: #475569; margin-bottom: 6px;">AI is actively listening...</div>
-                <div style="font-size: 13px; color: #94a3b8; text-align: center; max-width: 280px;">Awaiting external triggers. All logs and engine executions will magically appear here.</div>
-            </div>
-            <style>
-                @keyframes pulseFade {
-                    0% { transform: scale(0.95); opacity: 0.7; }
-                    50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0px 0px 8px rgba(249,115,22,0.3));}
-                    100% { transform: scale(0.95); opacity: 0.7; }
-                }
-            </style>
-            """
+<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 20px; background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, rgba(248, 250, 252, 0.8) 100%); border-radius: 12px; margin-top: 10px;">
+    <div style="font-size: 3rem; margin-bottom: 12px; animation: pulseFade 2.5s infinite ease-in-out;">🛡️</div>
+    <div style="font-size: 15px; font-weight: 600; color: #475569; margin-bottom: 6px;">AI is actively listening...</div>
+    <div style="font-size: 13px; color: #94a3b8; text-align: center; max-width: 280px;">Awaiting external triggers. All logs and engine executions will magically appear here.</div>
+</div>
+<style>
+    @keyframes pulseFade {
+        0% { transform: scale(0.95); opacity: 0.7; }
+        50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0px 0px 8px rgba(249,115,22,0.3));}
+        100% { transform: scale(0.95); opacity: 0.7; }
+    }
+</style>
+"""
             st.markdown(empty_state_html, unsafe_allow_html=True)
         else:
             html_logs = "<div class='logs-container'>"
@@ -657,14 +671,14 @@ else:
                 elif "executed" in clean_msg.lower(): styled_text = clean_msg.replace("executed", "<span class='status-pill status-executed'>EXECUTED</span>")
                 
                 html_logs += f"""
-                <div class='log-entry-card' style='display: flex; gap: 12px; align-items: flex-start;'>
-                    <div style='font-size: 1.2rem; background: rgba(249,115,22,0.1); padding: 5px; border-radius: 8px;'>{icon}</div>
-                    <div style='flex-grow: 1;'>
-                        <div class='log-timestamp'>{ts}</div>
-                        <div class='log-text'>{styled_text}</div>
-                    </div>
-                </div>
-                """
+<div class='log-entry-card' style='display: flex; gap: 12px; align-items: flex-start;'>
+    <div style='font-size: 1.2rem; background: rgba(249,115,22,0.1); padding: 5px; border-radius: 8px;'>{icon}</div>
+    <div style='flex-grow: 1;'>
+        <div class='log-timestamp'>{ts}</div>
+        <div class='log-text'>{styled_text}</div>
+    </div>
+</div>
+"""
             html_logs += "</div>"
             st.markdown(html_logs, unsafe_allow_html=True)
             
