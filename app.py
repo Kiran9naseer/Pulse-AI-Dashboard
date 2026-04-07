@@ -78,14 +78,14 @@ st.markdown("""
 
         .status-pill {
             display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
             margin-left: 4px;
         }
-        .status-enabled { background: #DCFCE7; color: #166534; }
+        .status-enabled { background: #D1FAE5; color: #065F46; }
         .status-halted { background: #FEE2E2; color: #991B1B; }
         .status-executed { background: #FFEDD5; color: #9A3412; }
 
@@ -99,7 +99,7 @@ st.markdown("""
         /* 1. Centered Workspace & Spacing */
         .block-container {
             max-width: 900px !important;
-            padding-top: 4.5rem !important;
+            padding-top: 2rem !important;
             padding-bottom: 6rem !important;
             animation: fadeIn 0.8s ease-out;
         }
@@ -126,40 +126,44 @@ st.markdown("""
             letter-spacing: -0.01em !important;
         }
 
-        /* 3. Horizontal Navbar / Tabs Improvement */
+        /* 3. Premium Buttons UI */
         div.stButton > button {
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            border-radius: 99px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border-radius: 999px !important;
             font-family: 'Inter', sans-serif !important;
             font-weight: 600 !important;
-            padding: 10px 20px !important;
+            padding: 12px 24px !important;
             height: auto !important;
-            border: 1px solid var(--border) !important;
-            margin-bottom: 0px !important;
-            background-color: var(--bg-nav-inactive) !important;
+            border: 1px solid rgba(0,0,0,0.05) !important;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%) !important;
             color: var(--text-main) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
         }
 
-        /* Scale Animation & Hover for ALL buttons */
         div.stButton > button:hover {
-            transform: scale(1.02) !important;
-            border-color: var(--primary-hover) !important;
-            background-color: #F3F4F6 !important;
-            color: var(--primary) !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+            transform: translateY(-2px) !important;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%) !important;
+            box-shadow: 0 6px 15px -3px rgba(0,0,0,0.1) !important;
         }
 
-        /* Active Navbar Tab (Priority Styling) - Targeting Primary type buttons */
         div.stButton > button[kind="primary"] {
-            background-color: var(--primary) !important;
+            background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
             color: white !important;
             border: none !important;
-            box-shadow: var(--shadow-active) !important;
+            box-shadow: 0 4px 14px 0 rgba(249,115,22, 0.39) !important;
         }
         
         div.stButton > button[kind="primary"]:hover {
-            background-color: var(--primary-hover) !important;
-            color: white !important;
+            background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%) !important;
+            box-shadow: 0 8px 22px rgba(249,115,22, 0.45) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        /* 3.1 Custom Flex Navbar */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
 
         /* 4. Infrastructure Cards Refinement */
@@ -231,17 +235,23 @@ st.markdown("""
         }
 
         .log-entry-card {
-            background: #FFFFFF !important;
+            background: rgba(255, 255, 255, 0.95) !important;
             border: 1px solid #E5E7EB !important;
-            border-radius: 10px !important;
-            padding: 12px 16px !important;
-            margin-bottom: 10px !important;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
-            transition: border-color 0.2s ease;
+            border-left: 4px solid #F97316 !important;
+            border-radius: 12px !important;
+            padding: 16px !important;
+            margin-bottom: 12px !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important;
+            transition: all 0.3s ease !important;
             text-align: left !important;
+            backdrop-filter: blur(8px);
         }
 
-        .log-entry-card:hover { border-color: #D1D5DB !important; }
+        .log-entry-card:hover { 
+            transform: translateX(4px) !important;
+            border-color: #D1D5DB !important; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.05) !important;
+        }
 
         .log-timestamp {
             font-size: 11px !important;
@@ -260,14 +270,14 @@ st.markdown("""
 
         .status-pill {
             display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
             margin-left: 4px;
         }
-        .status-enabled { background: #DCFCE7 !important; color: #166534 !important; }
+        .status-enabled { background: #D1FAE5 !important; color: #065F46 !important; }
         .status-halted { background: #FEE2E2 !important; color: #991B1B !important; }
         .status-executed { background: #FFEDD5 !important; color: #9A3412 !important; }
 
@@ -342,19 +352,21 @@ if not st.session_state.logged_in:
             .forgot-link { display:block; text-align:right; font-size:12.5px; color:#f97316; text-decoration:none; margin-top:-8px; margin-bottom:14px; font-weight:500; }
             .forgot-link:hover { color:#ea580c; text-decoration:underline; }
             div.stButton > button {
-                background-color: #F97316;
+                background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
                 color: white;
                 border-radius: 999px;
-                height: 48px;
+                height: 52px;
                 width: 100%;
                 font-weight: 600;
+                font-size: 15px;
                 border: none;
-                transition: all 0.2s ease;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 4px 14px 0 rgba(249,115,22, 0.39);
             }
             div.stButton > button:hover {
-                background-color: #ea580c;
-                transform: translateY(-1px);
-                box-shadow: 0 6px 16px rgba(249,115,22,0.35);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(249,115,22,0.45);
+                background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%);
             }
         </style>
     """, unsafe_allow_html=True)
@@ -448,7 +460,7 @@ else:
     # Navbar Spacing
     st.markdown("<div style='margin-bottom: 30px;'></div>", unsafe_allow_html=True)
     
-    col_nav1, col_nav2, col_nav3 = st.columns([1,1,1])
+    empty_left, col_nav1, col_nav2, col_nav3, empty_right = st.columns([1, 1.2, 1.2, 1.2, 1])
     
     with col_nav1:
         if st.button("📊 Dashboard", use_container_width=True, type="primary" if st.session_state.page == "📊 Pipeline Dashboard" else "secondary"):
@@ -609,18 +621,50 @@ else:
         display_logs = get_logs(limit=40)
         
         if not display_logs:
-            st.markdown("<p style='color:#9ca3af; font-size:14px; text-align:center; padding: 30px;'>Awaiting system events...</p>", unsafe_allow_html=True)
+            empty_state_html = """
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 20px; background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, rgba(248, 250, 252, 0.8) 100%); border-radius: 12px; margin-top: 10px;">
+                <div style="font-size: 3rem; margin-bottom: 12px; animation: pulseFade 2.5s infinite ease-in-out;">🛡️</div>
+                <div style="font-size: 15px; font-weight: 600; color: #475569; margin-bottom: 6px;">AI is actively listening...</div>
+                <div style="font-size: 13px; color: #94a3b8; text-align: center; max-width: 280px;">Awaiting external triggers. All logs and engine executions will magically appear here.</div>
+            </div>
+            <style>
+                @keyframes pulseFade {
+                    0% { transform: scale(0.95); opacity: 0.7; }
+                    50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0px 0px 8px rgba(249,115,22,0.3));}
+                    100% { transform: scale(0.95); opacity: 0.7; }
+                }
+            </style>
+            """
+            st.markdown(empty_state_html, unsafe_allow_html=True)
         else:
             html_logs = "<div class='logs-container'>"
             for log in display_logs:
                 msg = log['message']
                 ts = log['timestamp']
                 clean_msg = msg.replace("[EXEC] ", "").replace("[SYS] ", "")
+                
+                # Dynamic Icon parsing
+                icon = "⚙️"
+                if "authenticated" in clean_msg.lower() or "provisioned" in clean_msg.lower() or "session" in clean_msg.lower(): icon = "👤"
+                elif "enabled" in clean_msg.lower(): icon = "⚡"
+                elif "halted" in clean_msg.lower(): icon = "🛑"
+                elif "error" in clean_msg.lower() or "failed" in clean_msg.lower(): icon = "⚠️"
+                elif "sandbox" in clean_msg.lower(): icon = "🧠"
+
                 styled_text = clean_msg
-                if "enabled" in clean_msg.lower(): styled_text = clean_msg.replace("enabled", "<span class='status-pill status-enabled'>enabled</span>")
-                elif "halted" in clean_msg.lower(): styled_text = clean_msg.replace("halted", "<span class='status-pill status-halted'>halted</span>")
-                elif "executed" in clean_msg.lower(): styled_text = clean_msg.replace("executed", "<span class='status-pill status-executed'>executed</span>")
-                html_logs += f"<div class='log-entry-card'><div class='log-timestamp'>{ts}</div><div class='log-text'>{styled_text}</div></div>"
+                if "enabled" in clean_msg.lower(): styled_text = clean_msg.replace("enabled", "<span class='status-pill status-enabled'>ACTIVE</span>")
+                elif "halted" in clean_msg.lower(): styled_text = clean_msg.replace("halted", "<span class='status-pill status-halted'>HALTED</span>")
+                elif "executed" in clean_msg.lower(): styled_text = clean_msg.replace("executed", "<span class='status-pill status-executed'>EXECUTED</span>")
+                
+                html_logs += f"""
+                <div class='log-entry-card' style='display: flex; gap: 12px; align-items: flex-start;'>
+                    <div style='font-size: 1.2rem; background: rgba(249,115,22,0.1); padding: 5px; border-radius: 8px;'>{icon}</div>
+                    <div style='flex-grow: 1;'>
+                        <div class='log-timestamp'>{ts}</div>
+                        <div class='log-text'>{styled_text}</div>
+                    </div>
+                </div>
+                """
             html_logs += "</div>"
             st.markdown(html_logs, unsafe_allow_html=True)
             
