@@ -291,17 +291,31 @@ st.markdown("""
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
 
-        /* Hide ALL Streamlit branding, deployment buttons, and toolbars */
-        #MainMenu, footer, header, .stDeployButton, 
+        /* Hide Streamlit branding but KEEP sidebar toggle */
+        footer, .stDeployButton, 
         [data-testid="stToolbar"], [data-testid="stDecoration"],
         [data-testid="stStatusWidget"], [data-testid="stAppDeployButton"],
         .viewerBadge_container__1QSob, .viewerBadge_link__1S137 {
             display: none !important;
             visibility: hidden !important;
-            opacity: 0 !important;
+        }
+        
+        /* Specific header cleaning without hiding toggle */
+        [data-testid="stHeader"] {
+            background-color: rgba(0,0,0,0) !important;
+        }
+        
+        /* Make sidebar wider and more professional */
+        [data-testid="stSidebar"] {
+            min-width: 300px !important;
+            max-width: 300px !important;
         }
     </style>
 """, unsafe_allow_html=True)
+
+# Force Sidebar State via query params or config is better, 
+# but we'll stick to a robust layout.
+
 
 
 # =============================================================================
