@@ -381,6 +381,7 @@ if not st.session_state.logged_in:
     # ── Centered 3-column layout ──────────────────────────────────────────────
     col1, col2, col3 = st.columns([1, 2, 1])
 
+    with col2:
         # Minimal Login Branding
         st.markdown("<h1 style='text-align:center; color:#F97316; font-size:48px; margin-bottom:0;'>⚡</h1>", unsafe_allow_html=True)
         st.markdown("<h1 style='text-align:center; color:#111827; margin-top:0;'>Pulse.ai</h1>", unsafe_allow_html=True)
