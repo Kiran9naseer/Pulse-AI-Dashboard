@@ -386,9 +386,13 @@ if not st.session_state.logged_in:
 
     with col2:
         # Minimal Login Branding
-        st.markdown("<h1 style='text-align:center; color:#F97316; font-size:48px; margin-bottom:0;'>⚡</h1>", unsafe_allow_html=True)
-        st.markdown("<h1 style='text-align:center; color:#111827; margin-top:0;'>Pulse.ai</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:#64748B;'>Enterprise AI Orchestration</p>", unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 0;">
+                <h1 style='color:#F97316; font-size:48px; margin:0;'>⚡</h1>
+                <h1 style='color:#111827; margin:0; font-family: "Outfit", sans-serif; font-weight:800; letter-spacing:-0.05em;'>Pulse.ai</h1>
+            </div>
+            <p style='text-align:center; color:#64748B; margin-top:8px; font-size:15px; font-weight:500;'>Enterprise AI Orchestration</p>
+        """, unsafe_allow_html=True)
 
         st.markdown("""
             <div style="
