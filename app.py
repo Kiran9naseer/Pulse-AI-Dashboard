@@ -403,8 +403,16 @@ if not st.session_state.logged_in:
 
     with col2:
 
-        st.markdown("<h1 style='text-align:center; color:#1F2937;'>Pulse.ai</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:#6B7280;'>Smart AI Automation Dashboard</p>", unsafe_allow_html=True)
+        # Added Branding to Login Page
+        st.markdown("""
+            <div style="text-align:center; margin-bottom:20px;">
+                <div style="display:inline-flex; align-items:center; justify-content:center; background:#F97316; color:white; padding:12px; border-radius:14px; margin-bottom:15px; box-shadow: 0 10px 15px -3px rgba(249,115,22, 0.3);">
+                    <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h1 style='color:#111827; margin-bottom:0px; font-family: "Outfit", sans-serif; font-weight:800; letter-spacing:-0.05em;'>Pulse.ai</h1>
+                <p style='color:#64748B; font-family: "Outfit", sans-serif; font-weight:500; font-size:15px;'>Smart AI Automation Dashboard</p>
+            </div>
+        """, unsafe_allow_html=True)
 
         st.markdown("""
             <div style="
@@ -467,12 +475,48 @@ if not st.session_state.logged_in:
 # =============================================================================
 else:
     
+    # 1. SIDEBAR FIRST (Best practice for Streamlit layout stability)
+    with st.sidebar:
+        st.markdown(f"""
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 24px; color:#0f172a; letter-spacing:-0.04em;">Pulse.ai</div>
+            </div>
+            <div style="margin-bottom: 20px;"></div>
+        """, unsafe_allow_html=True)
+        
+        st.write("---")
+        
+        # Profile Card
+        st.markdown(f"""
+            <div class='user-profile-card'>
+                <div style='width:40px; height:40px; border-radius: 10px; background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%); display:flex; align-items:center; justify-content:center; margin-right: 12px; font-weight:800; color:#1e293b; border: 1px solid #94a3b8; font-size: 16px;'>
+                    {st.session_state.current_user[0].upper()}
+                </div>
+                <div style='flex-grow: 1;'>
+                    <div style='font-size:14px; font-weight: 700; color:#111827;'>{st.session_state.current_user.split('@')[0].capitalize()}</div>
+                    <div style='font-size:11px; color:#64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em;'>Enterprise Client</div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("Sign out", type="secondary", use_container_width=True, key="signout_btn"):
+            st.session_state.logged_in = False
+            st.session_state.current_user = None
+            st.session_state.automation_running = False
+            add_log("[SYS] User session terminated.")
+            st.rerun()
+
     # Build Analytics
     logs = get_logs(limit=200)
     total_runs = len(logs)
     errors_today = sum(1 for l in logs if "Error" in l['message'] or "NotFound" in l['message'])
     success_rate = 100 if total_runs == 0 else int(((total_runs - errors_today) / total_runs) * 100)
-    active_flows = sum([st.session_state.pref_linkedin, st.session_state.pref_email, st.session_state.pref_whatsapp])
+    active_flows = sum([st.session_state.get('pref_linkedin', True), st.session_state.get('pref_email', True), st.session_state.get('pref_whatsapp', True)])
 
     # Dynamic Smooth Curve Data (Line chart native)
     chart_data = pd.DataFrame(
@@ -506,43 +550,6 @@ else:
     st.markdown("<div style='margin-bottom: 35px;'></div>", unsafe_allow_html=True)
     
     page = st.session_state.page
-
-    # Sidebar remains for Logo and User Profile
-    with st.sidebar:
-        st.markdown(f"""
-            <div class="sidebar-logo">
-                <div class="sidebar-logo-icon">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </div>
-                <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 24px; color:#0f172a; letter-spacing:-0.04em;">Pulse.ai</div>
-            </div>
-            <div style="margin-bottom: 20px;"></div>
-        """, unsafe_allow_html=True)
-        
-        st.write("---")
-        
-        # Profile Card
-        st.markdown(f"""
-            <div class='user-profile-card'>
-                <div style='width:40px; height:40px; border-radius: 10px; background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%); display:flex; align-items:center; justify-content:center; margin-right: 12px; font-weight:800; color:#1e293b; border: 1px solid #94a3b8; font-size: 16px;'>
-                    {st.session_state.current_user[0].upper()}
-                </div>
-                <div style='flex-grow: 1;'>
-                    <div style='font-size:14px; font-weight: 700; color:#111827;'>{st.session_state.current_user.split('@')[0].capitalize()}</div>
-                    <div style='font-size:11px; color:#64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em;'>Enterprise Client</div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-
-        
-        if st.button("Sign out", type="secondary", use_container_width=True, key="signout_btn"):
-            st.session_state.logged_in = False
-            st.session_state.current_user = None
-            st.session_state.automation_running = False
-            add_log("[SYS] User session terminated.")
-            st.rerun()
 
     # -------------------------------------------------------------------------
     # MAIN WORKSPACE
