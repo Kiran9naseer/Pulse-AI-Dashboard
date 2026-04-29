@@ -324,94 +324,56 @@ if "pref_whatsapp" not in st.session_state:
 # =============================================================================
 # UNAUTHENTICATED VIEW -> Centered Login with Columns (NO CSS Hack)
 # =============================================================================
+
+
+# =============================================================================
+# MAIN APP FLOW (FIXED STRUCTURE)
+# =============================================================================
+# =============================================================================
+# AUTH FLOW (FIXED)
+# =============================================================================
 if not st.session_state.logged_in:
 
-    st.markdown("""
-        <style>
-            section[data-testid="stSidebar"] { display: none !important; }
-            [data-testid="stHeader"] { display: none !important; }
-            .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-            @keyframes loginFadeUp {
-                from { opacity: 0; transform: translateY(12px); }
-                to   { opacity: 1; transform: translateY(0); }
-            }
-            .login-card {
-                background: rgba(255,255,255,0.85);
-                padding: 36px 32px 28px 32px;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                border: 1px solid rgba(255,255,255,0.5);
-                animation: loginFadeUp 0.55s cubic-bezier(0.16,1,0.3,1) both;
-            }
-            div[data-baseweb="input"] {
-                border-radius: 10px !important;
-                border: 1px solid #e2e8f0 !important;
-                background: #ffffff !important;
-                transition: all 0.2s ease;
-            }
-            div[data-baseweb="input"]:focus-within {
-                border-color: #f97316 !important;
-                box-shadow: 0 0 0 3px rgba(249,115,22,0.15) !important;
-            }
-            .divider { display:flex; align-items:center; color:#9ca3af; font-size:13px; margin:20px 0; }
-            .divider::before, .divider::after { content:''; flex:1; border-bottom:1px solid #e5e7eb; }
-            .divider:not(:empty)::before { margin-right:.5em; }
-            .divider:not(:empty)::after  { margin-left:.5em; }
-            .forgot-link { display:block; text-align:right; font-size:12.5px; color:#f97316; text-decoration:none; margin-top:-8px; margin-bottom:14px; font-weight:500; }
-            .forgot-link:hover { color:#ea580c; text-decoration:underline; }
-            div.stButton > button {
-                background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
-                color: white;
-                border-radius: 999px;
-                height: 52px;
-                width: 100%;
-                font-weight: 600;
-                font-size: 15px;
-                border: none;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 0 4px 14px 0 rgba(249,115,22, 0.39);
-            }
-            div.stButton > button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(249,115,22,0.45);
-                background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%);
-            }
-        </style>
-    """, unsafe_allow_html=True)
-
-    # ── Centered 3-column layout ──────────────────────────────────────────────
+    # ── Centered Layout ──────────────────────────────────────────────
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-        # Minimal Login Branding
-        st.markdown(f"""
-            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 0;">
-                <h1 style='color:#F97316; font-size:48px; margin:0;'>⚡</h1>
-                <h1 style='color:#111827; margin:0; font-family: "Outfit", sans-serif; font-weight:800; letter-spacing:-0.05em;'>Pulse.ai</h1>
+        # --- HEADER ---
+        st.markdown("""
+            <div style="text-align:center; margin-bottom:10px;">
+                <div style="display:flex; justify-content:center; gap:10px;">
+                    <span style='font-size:40px;'>⚡</span>
+                    <span style='font-size:30px; font-weight:800;'>Pulse.ai</span>
+                </div>
+                <p style='color:#6B7280; font-size:14px;'>
+                    AI Automation Platform for Business Workflows
+                </p>
             </div>
-            <p style='text-align:center; color:#64748B; margin-top:8px; font-size:15px; font-weight:500;'>Enterprise AI Orchestration</p>
         """, unsafe_allow_html=True)
 
+        # --- FEATURES ---
         st.markdown("""
-            <div style="
-                background:#FFFFFF;
-                padding:30px;
-                border-radius:16px;
-                border:1px solid #E5E7EB;
-                box-shadow:0 4px 12px rgba(0,0,0,0.05);
-            ">
+            <div style="text-align:center; font-size:13px; margin-bottom:20px;">
+                <div>🚀 Auto LinkedIn Posting</div>
+                <div>💬 AI Smart Replies</div>
+                <div>📊 Analytics Dashboard</div>
+            </div>
         """, unsafe_allow_html=True)
+
 
         tab_login, tab_signup = st.tabs(["Sign In", "Create Account"])
 
+        # LOGIN
         with tab_login:
-            st.write("")
             with st.form("login_form"):
                 login_username = st.text_input("Work Email", placeholder="name@company.com")
                 login_password = st.text_input("Password", type="password")
-                submitted = st.form_submit_button("Sign in →", type="primary", use_container_width=True)
+
+                submitted = st.form_submit_button(
+                    "Access Dashboard →",
+                    type="primary",
+                    use_container_width=True
+                )
 
             if submitted:
                 if not login_username or not login_password:
@@ -424,14 +386,18 @@ if not st.session_state.logged_in:
                 else:
                     st.error("Invalid credentials.")
 
+        # SIGNUP
         with tab_signup:
-            st.write("")
             with st.form("signup_form"):
-                signup_username = st.text_input("Full Name or Email", placeholder="Jane Doe")
-                signup_password = st.text_input("Password", type="password", placeholder="Min. 8 characters")
-                signup_confirm  = st.text_input("Confirm Password", type="password", placeholder="Repeat password")
-                st.write("")
-                submitted_signup = st.form_submit_button("Create account →", type="primary", use_container_width=True)
+                signup_username = st.text_input("Full Name or Email")
+                signup_password = st.text_input("Password", type="password")
+                signup_confirm = st.text_input("Confirm Password", type="password")
+
+                submitted_signup = st.form_submit_button(
+                    "Create Account →",
+                    type="primary",
+                    use_container_width=True
+                )
 
             if submitted_signup:
                 if signup_password != signup_confirm:
@@ -442,13 +408,6 @@ if not st.session_state.logged_in:
                         add_log(f"[SYS] New tenant provisioned: '{signup_username}'")
                     else:
                         st.error("Username already taken.")
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        st.write("")
-        st.button("Continue with SSO", use_container_width=True)
-
-
 
 # =============================================================================
 # LOGGED IN VIEW -> Enterprise Dashboard
@@ -781,6 +740,12 @@ else:
         # Platform toggles to actually control them
         st.markdown("<div style='font-size: 1rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px;'>Enable / Disable Channels</div>", unsafe_allow_html=True)
         t1, t2, t3 = st.columns(3)
-        with t1: st.toggle("LinkedIn Graph API", key="pref_linkedin")
-        with t2: st.toggle("SES Email Relay", key="pref_email")
-        with t3: st.toggle("WhatsApp Cloud API", key="pref_whatsapp")
+        with t1:
+            val = st.toggle("LinkedIn Graph API", value=st.session_state.pref_linkedin, key="pref_linkedin_settings")
+            st.session_state.pref_linkedin = val
+        with t2:
+            val = st.toggle("SES Email Relay", value=st.session_state.pref_email, key="pref_email_settings")
+            st.session_state.pref_email = val
+        with t3:
+            val = st.toggle("WhatsApp Cloud API", value=st.session_state.pref_whatsapp, key="pref_whatsapp_settings")
+            st.session_state.pref_whatsapp = val
