@@ -27,7 +27,7 @@ init_db()
 # --- $100/mo SaaS Ultra-Premium Aesthetics (Linear/Vercel Vibe) ---
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
         /* Dashboard Design System Variables */
         :root {
@@ -35,11 +35,17 @@ st.markdown("""
             --primary-hover: #FB923C;
             --bg-page: #FDFDFD;
             --bg-nav-inactive: #F8F7F5;
-            --text-main: #1F2937;
-            --text-sub: #6B7280;
+            --text-main: #111827;
+            --text-sub: #4B5563;
             --border: #E5E7EB;
             --shadow-card: 0 4px 12px rgba(0,0,0,0.05);
             --shadow-active: 0 10px 15px -3px rgba(249,115,22, 0.25);
+            --font-outfit: 'Outfit', sans-serif;
+        }
+
+        /* Global Font Application */
+        html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-testid="stSidebar"], .main-title, .subtitle {
+            font-family: var(--font-outfit) !important;
         }
 
         /* 5. Logs UI Improvements */
@@ -487,30 +493,35 @@ else:
     
     page = st.session_state.page
 
-    # Sidebar remains only for Logo and Sign out (Starts Collapsed)
+    # Sidebar remains for Logo and User Profile
     with st.sidebar:
-        st.markdown("""
+        st.markdown(f"""
             <div class="sidebar-logo">
                 <div class="sidebar-logo-icon">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
                 </div>
-                <div style="font-weight: 800; font-size: 19px; color:#030712; letter-spacing:-0.03em;">Pulse.ai</div>
+                <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 24px; color:#0f172a; letter-spacing:-0.04em;">Pulse.ai</div>
             </div>
+            <div style="margin-bottom: 20px;"></div>
         """, unsafe_allow_html=True)
+        
         st.write("---")
         
         # Profile Card
         st.markdown(f"""
             <div class='user-profile-card'>
-                <div style='width:36px; height:36px; border-radius: 8px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display:flex; align-items:center; justify-content:center; margin-right: 12px; font-weight:700; color:#334155; border: 1px solid #cbd5e1;'>
+                <div style='width:40px; height:40px; border-radius: 10px; background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%); display:flex; align-items:center; justify-content:center; margin-right: 12px; font-weight:800; color:#1e293b; border: 1px solid #94a3b8; font-size: 16px;'>
                     {st.session_state.current_user[0].upper()}
                 </div>
                 <div style='flex-grow: 1;'>
-                    <div style='font-size:13px; font-weight: 600; color:#111827; letter-spacing:-0.01em;'>{st.session_state.current_user}</div>
-                    <div style='font-size:11px; color:#6b7280; font-weight: 500;'>Enterprise Plan</div>
+                    <div style='font-size:14px; font-weight: 700; color:#111827;'>{st.session_state.current_user.split('@')[0].capitalize()}</div>
+                    <div style='font-size:11px; color:#64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em;'>Enterprise Client</div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
+
         
         if st.button("Sign out", type="secondary", use_container_width=True, key="signout_btn"):
             st.session_state.logged_in = False
