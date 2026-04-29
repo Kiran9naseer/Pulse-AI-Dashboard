@@ -291,30 +291,10 @@ st.markdown("""
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
 
-        /* Hide Streamlit branding but KEEP sidebar toggle */
-        footer, .stDeployButton, 
-        [data-testid="stToolbar"], [data-testid="stDecoration"],
-        [data-testid="stStatusWidget"], [data-testid="stAppDeployButton"],
-        .viewerBadge_container__1QSob, .viewerBadge_link__1S137 {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        
-        /* Specific header cleaning without hiding toggle */
-        [data-testid="stHeader"] {
-            background-color: rgba(0,0,0,0) !important;
-        }
-        
-        /* Make sidebar wider and more professional */
-        [data-testid="stSidebar"] {
-            min-width: 300px !important;
-            max-width: 300px !important;
-        }
+        /* Simplified Hide Logic */
+        footer {visibility: hidden;}
     </style>
 """, unsafe_allow_html=True)
-
-# Force Sidebar State via query params or config is better, 
-# but we'll stick to a robust layout.
 
 
 
@@ -401,18 +381,10 @@ if not st.session_state.logged_in:
     # ── Centered 3-column layout ──────────────────────────────────────────────
     col1, col2, col3 = st.columns([1, 2, 1])
 
-    with col2:
-
-        # Added Branding to Login Page
-        st.markdown("""
-            <div style="text-align:center; margin-bottom:20px;">
-                <div style="display:inline-flex; align-items:center; justify-content:center; background:#F97316; color:white; padding:12px; border-radius:14px; margin-bottom:15px; box-shadow: 0 10px 15px -3px rgba(249,115,22, 0.3);">
-                    <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
-                <h1 style='color:#111827; margin-bottom:0px; font-family: "Outfit", sans-serif; font-weight:800; letter-spacing:-0.05em;'>Pulse.ai</h1>
-                <p style='color:#64748B; font-family: "Outfit", sans-serif; font-weight:500; font-size:15px;'>Smart AI Automation Dashboard</p>
-            </div>
-        """, unsafe_allow_html=True)
+        # Minimal Login Branding
+        st.markdown("<h1 style='text-align:center; color:#F97316; font-size:48px; margin-bottom:0;'>⚡</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align:center; color:#111827; margin-top:0;'>Pulse.ai</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#64748B;'>Enterprise AI Orchestration</p>", unsafe_allow_html=True)
 
         st.markdown("""
             <div style="
@@ -475,41 +447,16 @@ if not st.session_state.logged_in:
 # =============================================================================
 else:
     
-    # 1. SIDEBAR FIRST (Best practice for Streamlit layout stability)
-    with st.sidebar:
-        st.markdown(f"""
-            <div class="sidebar-logo">
-                <div class="sidebar-logo-icon">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </div>
-                <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 24px; color:#0f172a; letter-spacing:-0.04em;">Pulse.ai</div>
-            </div>
-            <div style="margin-bottom: 20px;"></div>
-        """, unsafe_allow_html=True)
-        
-        st.write("---")
-        
-        # Profile Card
-        st.markdown(f"""
-            <div class='user-profile-card'>
-                <div style='width:40px; height:40px; border-radius: 10px; background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%); display:flex; align-items:center; justify-content:center; margin-right: 12px; font-weight:800; color:#1e293b; border: 1px solid #94a3b8; font-size: 16px;'>
-                    {st.session_state.current_user[0].upper()}
-                </div>
-                <div style='flex-grow: 1;'>
-                    <div style='font-size:14px; font-weight: 700; color:#111827;'>{st.session_state.current_user.split('@')[0].capitalize()}</div>
-                    <div style='font-size:11px; color:#64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em;'>Enterprise Client</div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        if st.button("Sign out", type="secondary", use_container_width=True, key="signout_btn"):
-            st.session_state.logged_in = False
-            st.session_state.current_user = None
-            st.session_state.automation_running = False
-            add_log("[SYS] User session terminated.")
-            st.rerun()
+    # 1. SIDEBAR (Simplified for max compatibility)
+    st.sidebar.title("⚡ Pulse.ai")
+    st.sidebar.info(f"Logged in: {st.session_state.current_user}")
+    
+    if st.sidebar.button("Log out", use_container_width=True):
+        st.session_state.logged_in = False
+        st.session_state.current_user = None
+        st.rerun()
+
+    st.sidebar.write("---")
 
     # Build Analytics
     logs = get_logs(limit=200)
