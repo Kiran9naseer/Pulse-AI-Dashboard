@@ -448,16 +448,55 @@ if not st.session_state.logged_in:
 # =============================================================================
 else:
     
-    # 1. SIDEBAR (Simplified for max compatibility)
-    st.sidebar.title("⚡ Pulse.ai")
-    st.sidebar.info(f"Logged in: {st.session_state.current_user}")
-    
-    if st.sidebar.button("Log out", use_container_width=True):
-        st.session_state.logged_in = False
-        st.session_state.current_user = None
-        st.rerun()
+    # 1. SIDEBAR (Enriched Enterprise Design)
+    with st.sidebar:
+        # Mini Branding
+        st.markdown("""
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                <div style="background:#F97316; color:white; padding:6px; border-radius:8px;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:#1e293b; letter-spacing:-0.04em;">Pulse.ai</div>
+            </div>
+        """, unsafe_allow_html=True)
 
-    st.sidebar.write("---")
+        # Profile Card
+        st.markdown(f"""
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:12px; display:flex; align-items:center; margin-bottom:20px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:linear-gradient(135deg,#F97316,#EA580C); color:white; display:flex; align-items:center; justify-content:center; margin-right:10px; font-weight:800; font-family:'Outfit';">{st.session_state.current_user[0].upper()}</div>
+                <div style="flex-grow:1; line-height:1.2;">
+                    <div style="font-size:13px; font-weight:700; color:#1e293b; font-family:'Outfit';">{st.session_state.current_user.split('@')[0].capitalize()}</div>
+                    <div style="font-size:10px; color:#64748b; font-weight:600; text-transform:uppercase;">Enterprise User</div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        # System Health & Quota
+        st.markdown("""
+            <div style="margin-bottom:24px; padding:0 4px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                   <span style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.03em;">System Health</span>
+                   <span style="display:flex; align-items:center; gap:4px; font-size:11px; font-weight:700; color:#10b981;">
+                       <span style="width:6px; height:6px; background:#10b981; border-radius:50%;"></span> Operational
+                   </span>
+                </div>
+                <div style="margin-top:16px;">
+                    <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:#64748b; margin-bottom:6px;">
+                        <span>AI Inference Quota</span>
+                        <span>82%</span>
+                    </div>
+                    <div style="width:100%; height:6px; background:#e2e8f0; border-radius:10px; overflow:hidden;">
+                        <div style="width:82%; height:100%; background:linear-gradient(90deg,#F97316,#fb923c); border-radius:10px;"></div>
+                    </div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        st.write("---")
+        if st.button("Sign out", type="secondary", use_container_width=True):
+            st.session_state.logged_in = False
+            st.session_state.current_user = None
+            st.rerun()
 
     # Build Analytics
     logs = get_logs(limit=200)
