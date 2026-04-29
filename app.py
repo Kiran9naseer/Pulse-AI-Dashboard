@@ -291,8 +291,74 @@ st.markdown("""
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
 
-        /* Simplified Hide Logic */
-        footer {visibility: hidden;}
+        /* Hide Streamlit Specific UI but Keep Sidebar Toggle */
+        .stDeployButton, #MainMenu, footer, .viewerBadge_container__1QSob, .viewerBadge_link__1S137 {
+            visibility: hidden !important;
+            display: none !important;
+        }
+
+        /* Custom Header Utility Bar */
+        .header-utility {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 999;
+        }
+
+        .utility-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .utility-btn:hover {
+            border-color: #F97316;
+            color: #F97316;
+            background: #FFF7ED;
+            transform: translateY(-1px);
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: #F1F5F9;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #10B981;
+            border: 1px solid #E2E8F0;
+        }
+
+        .pulse-dot-green {
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -515,8 +581,23 @@ else:
     # MAIN WORKSPACE
     # -------------------------------------------------------------------------
     # TOP NAVIGATION MENU (Inside Main Page to avoid Sidebar bugs)
-    # Navbar Spacing
-    st.markdown("<div style='margin-bottom: 30px;'></div>", unsafe_allow_html=True)
+    # Navbar & Utility Header
+    st.markdown("""
+        <div class="header-utility">
+            <div class="status-pill">
+                <span class="pulse-dot-green"></span> System Live
+            </div>
+            <a href="https://github.com/Kiran9naseer/Pulse-AI-Dashboard" target="_blank" class="utility-btn">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22v3.293c0 .319.192.694.805.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                GitHub Code
+            </a>
+            <a href="#" class="utility-btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Docs
+            </a>
+        </div>
+        <div style='margin-bottom: 50px;'></div>
+    """, unsafe_allow_html=True)
     
     col_nav1, col_nav2, col_nav3 = st.columns(3)
     
