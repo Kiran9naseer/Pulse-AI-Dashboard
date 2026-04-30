@@ -4,6 +4,3 @@ backgroundColor="#F8F7F5"
 secondaryBackgroundColor="#FFFFFF"
 textColor="#1F2937"
 font="sans serif"
-[ui]
-initialSidebarState="expanded"
-

@@ -16,15 +16,16 @@ from automation.email_handler import send_email_alert
 from automation.whatsapp import send_whatsapp_alert
 
 st.set_page_config(
-    page_title="AI SaaS",
-    layout="centered",
+    page_title="Pulse.ai — AI Automation Platform",
+    page_icon="⚡",
+    layout="wide",
     initial_sidebar_state="collapsed"
 )
 
 # --- Initialization ---
 init_db()
 
-# --- $100/mo SaaS Ultra-Premium Aesthetics (Linear/Vercel Vibe) ---
+# --- Premium Login Page + Dashboard CSS ---
 st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
@@ -334,47 +335,162 @@ if "pref_whatsapp" not in st.session_state:
 # =============================================================================
 if not st.session_state.logged_in:
 
-    # ── Centered Layout ──────────────────────────────────────────────
-    col1, col2, col3 = st.columns([1, 2, 1])
+    # ── White 2-Column Login — matches dashboard style ─────────────────────
+    st.markdown("""
+    <style>
+        /* Match dashboard background for login */
+        .stApp, [data-testid="stAppViewContainer"] {
+            background: #F8F7F5 !important;
+        }
+        [data-testid="stHeader"] { background: transparent !important; }
+        .block-container { 
+            padding-top: 40px !important; 
+            padding-bottom: 40px !important; 
+            max-width: 1200px !important; 
+        }
 
-    with col2:
-        # --- HEADER ---
+        /* Left panel */
+        .login-left {
+            padding: 20px 40px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .lbrand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .lbrand-icon {
+            background: #F97316;
+            color: white;
+            padding: 8px;
+            border-radius: 10px;
+            display: flex;
+        }
+        .lbrand-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 24px;
+            color: #111827;
+            letter-spacing: -0.04em;
+        }
+        .lheading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.15;
+            letter-spacing: -0.04em;
+            margin-bottom: 14px;
+        }
+        .lheading span { color: #F97316; }
+        .lsub {
+            font-size: 15px;
+            color: #64748B;
+            line-height: 1.7;
+            margin-bottom: 28px;
+            font-family: 'Outfit', sans-serif;
+        }
+        .lfeat {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .lfeat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            font-family: 'Outfit', sans-serif;
+        }
+        .lfeat-dot {
+            width: 8px; height: 8px;
+            background: #F97316;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* Right panel white card */
+        .login-right {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .card-sub {
+            font-size: 13px;
+            color: #6B7280;
+            margin-bottom: 24px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Form input spacing */
+        [data-testid="stForm"] [data-testid="stVerticalBlock"] {
+            gap: 1.5rem !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    col_left, col_right = st.columns([1, 1], gap="large", vertical_alignment="center")
+
+    with col_left:
         st.markdown("""
-            <div style="text-align:center; margin-bottom:10px;">
-                <div style="display:flex; justify-content:center; gap:10px;">
-                    <span style='font-size:40px;'>⚡</span>
-                    <span style='font-size:30px; font-weight:800;'>Pulse.ai</span>
+        <div class="login-left">
+            <div class="lbrand">
+                <div class="lbrand-icon">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
                 </div>
-                <p style='color:#6B7280; font-size:14px;'>
-                    AI Automation Platform for Business Workflows
-                </p>
+                <div class="lbrand-text">Pulse.ai</div>
             </div>
+            <div class="lheading">Automate outreach, replies & analytics —<br>all in one <span>AI platform.</span></div>
+            <div style="font-family:'Outfit', sans-serif; font-weight:700; color:#F97316; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:16px; display:inline-flex; align-items:center; gap:6px;">
+                Built for modern AI automation workflows
+            </div>
+            <div class="lsub">Pulse.ai gives your team the power to automate outreach,<br>reply smarter, and track everything in real-time.</div>
+            <div class="lfeat">
+                <div class="lfeat-item"><span class="lfeat-dot"></span> Automate LinkedIn outreach at scale</div>
+                <div class="lfeat-item"><span class="lfeat-dot"></span> Generate human-like AI replies instantly</div>
+                <div class="lfeat-item"><span class="lfeat-dot"></span> Track performance with real-time analytics</div>
+                <div class="lfeat-item"><span class="lfeat-dot"></span> Multi-channel automation (Email + WhatsApp)</div>
+            </div>
+        </div>
         """, unsafe_allow_html=True)
 
-        # --- FEATURES ---
+    with col_right:
+        st.markdown('<div class="login-right">', unsafe_allow_html=True)
         st.markdown("""
-            <div style="text-align:center; font-size:13px; margin-bottom:20px;">
-                <div>🚀 Auto LinkedIn Posting</div>
-                <div>💬 AI Smart Replies</div>
-                <div>📊 Analytics Dashboard</div>
+            <div style="margin-bottom: 24px;">
+                <h2 style="margin: 0; font-size: 28px; font-weight: 800; color: #111827; font-family: 'Outfit', sans-serif; letter-spacing: -0.02em;">Welcome to Pulse.ai</h2>
+                <p style="margin: 4px 0 0 0; font-size: 15px; color: #6B7280; font-family: 'Outfit', sans-serif;">Sign in or create an account to continue</p>
             </div>
         """, unsafe_allow_html=True)
-
-
+        
         tab_login, tab_signup = st.tabs(["Sign In", "Create Account"])
 
-        # LOGIN
         with tab_login:
             with st.form("login_form"):
                 login_username = st.text_input("Work Email", placeholder="name@company.com")
                 login_password = st.text_input("Password", type="password")
-
                 submitted = st.form_submit_button(
                     "Access Dashboard →",
                     type="primary",
                     use_container_width=True
                 )
-
             if submitted:
                 if not login_username or not login_password:
                     st.warning("Please fill in both fields.")
@@ -384,30 +500,29 @@ if not st.session_state.logged_in:
                     add_log(f"[SYS] User '{login_username}' authenticated successfully.")
                     st.rerun()
                 else:
-                    st.error("Invalid credentials.")
+                    st.error("Invalid credentials. Please try again.")
 
-        # SIGNUP
         with tab_signup:
             with st.form("signup_form"):
-                signup_username = st.text_input("Full Name or Email")
+                signup_username = st.text_input("Work Email", placeholder="name@company.com")
                 signup_password = st.text_input("Password", type="password")
                 signup_confirm = st.text_input("Confirm Password", type="password")
-
                 submitted_signup = st.form_submit_button(
-                    "Create Account →",
+                    "Get Started →",
                     type="primary",
                     use_container_width=True
                 )
-
             if submitted_signup:
                 if signup_password != signup_confirm:
                     st.error("Passwords do not match.")
                 else:
                     if create_user(signup_username, signup_password):
-                        st.success("Account created! Please sign in.")
+                        st.success("✅ Account created! Please sign in.")
                         add_log(f"[SYS] New tenant provisioned: '{signup_username}'")
                     else:
                         st.error("Username already taken.")
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # =============================================================================
 # LOGGED IN VIEW -> Enterprise Dashboard
